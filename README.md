@@ -53,4 +53,4 @@ Interactions are saved in `out_put.csv`, clearly documenting all ChatGPT respons
 
 ## 📫 Contact
 
-Made with ❤️ by [Your Name](https://github.com/yourusername)
+Made with ❤️ by [Your Name](https://github.com/YourDataArchitect)
