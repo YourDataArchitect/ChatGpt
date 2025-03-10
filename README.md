@@ -20,7 +20,7 @@ Follow these simple steps to get started:
 ### Step 1: Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/chatgpt-bot.git
+git clone https://github.com/yourusername/ChatGpt.git
 ```
 
 ### Step 2: Install dependencies
