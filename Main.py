@@ -1,9 +1,6 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import StaleElementReferenceException
-from selenium.common.exceptions import TimeoutException
-from selenium.common.exceptions import NoSuchElementException
 import random
 import pandas as pd
 import undetected_chromedriver as uc
@@ -17,11 +14,12 @@ class ChatGPT:
         self.chrome_driver = os.path.join(self.current_folder, "chromedriver.exe")
         self.login_page = 'https://chatgpt.com/'
         self.driver = None
-        self.username =  'ramezrasmy876@gmail.com'
-        self.password =  '!@#$Ramez24916122'
+        self.username =  input("Enter username : ")
+        self.password =  input("Enter password : ")
     
         
     def launch_driver(self):
+        'This function for launching browser driver'
         print(f'-- >> Login page {self.login_page}')
         # Config Driver Options
         user_agents_list = [
@@ -45,7 +43,6 @@ class ChatGPT:
         "Mozilla/5.0 (Linux; Android 9; SM-G960U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36",
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36 Edg/92.0.902.55",
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.2 Safari/605.1.15"]
-        
         
         options = uc.ChromeOptions()
         options.add_argument(f'user-agent={random.choice(user_agents_list)}')
@@ -71,7 +68,7 @@ class ChatGPT:
         return self.driver
 
     def handling_token(self):
-        # Enter Token to 
+        'This function for handling authentication and token page'
         token_number = input('Please check your email to extract the token number and enter it here:')
         input_xpath = '//input'
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, input_xpath))).send_keys(token_number)
@@ -82,7 +79,7 @@ class ChatGPT:
         return self.driver 
 
     def login(self):
-        
+        'This function for lon in page'
         # press login button
         print('press login button') 
         login_button_xpath = '//div[@class="flex items-center gap-2 pr-1 leading-[0]"]//*[contains(text(),"Log in")]'
@@ -111,14 +108,18 @@ class ChatGPT:
         
     
 if __name__ == "__main__":
+    
+    # Init the driver
     ChatGPT_instant = ChatGPT()
     driver = ChatGPT_instant.launch_driver()
+    
+    # handling login page
     driver = ChatGPT_instant.login()
     
     # handling token page 
     driver = ChatGPT_instant.handling_token()
 
-    
+    # Ask questions and save questions and answers to csv file 
     output_list = []
     while True : 
         item = {}
@@ -130,8 +131,6 @@ if __name__ == "__main__":
         time.sleep(5)
         print('waiting answer')
         Answer = WebDriverWait(driver, 10).until(EC.visibility_of_all_elements_located((By.XPATH, '//p[@data-start="0"]')))[-1].text
-         
-
         print(Answer)
         
         response = input('Is there another questions ,\n if yes please enter [y],\n if No more questions please enter [n] : ')
