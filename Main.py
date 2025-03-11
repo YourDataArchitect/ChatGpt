@@ -83,25 +83,25 @@ class ChatGPT:
         # press login button
         print('press login button') 
         login_button_xpath = '//div[@class="flex items-center gap-2 pr-1 leading-[0]"]//*[contains(text(),"Log in")]'
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, login_button_xpath))).click()
+        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, login_button_xpath))).click()
         
         # input username 
         username_box_input_xpath = '//input[@id="email-input"]'
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, username_box_input_xpath))).send_keys(self.username)
+        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, username_box_input_xpath))).send_keys(self.username)
 
         # press continue button
         cotinue_buttom_xpath = '//input[@class="continue-btn"]'
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, cotinue_buttom_xpath))).click()
+        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, cotinue_buttom_xpath))).click()
 
         # input password
         password_xpath = '//input[@id="password"]'
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, password_xpath))).send_keys(self.password)
+        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, password_xpath))).send_keys(self.password)
 
         # press submit button
         submit_button_xpath = '//button[@type="submit"]'
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, submit_button_xpath))).click()
+        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, submit_button_xpath))).click()
         
-        return driver
+        return self.driver
         
 
         # please check your email and Enter Token send to your email address
@@ -124,23 +124,32 @@ if __name__ == "__main__":
     while True : 
         item = {}
         prompt = input('Please Enter your Prompt : ')
-        driver.find_element(By.XPATH,'//br[@class="ProseMirror-trailingBreak"]').send_keys(prompt)
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//div[@class="flex gap-x-1.5"]'))).click()
         
-        # extract data output and save to csv file
-        time.sleep(5)
-        print('waiting answer')
-        Answer = WebDriverWait(driver, 10).until(EC.visibility_of_all_elements_located((By.XPATH, '//p[@data-start="0"]')))[-1].text
-        print(Answer)
+        # write prompt 
+        driver.find_element(By.XPATH,'//div[@class="ProseMirror"]').send_keys(prompt)
         
-        response = input('Is there another questions ,\n if yes please enter [y],\n if No more questions please enter [n] : ')
-        if response == 'n' or 'N' : 
+        # submit prompt 
+        WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, '//div[@class="flex gap-x-1.5"]'))).click()
+        
+        # waiting the all answer is available for extract 
+        print('Waiting for answer ........')
+        time.sleep(10)
+        WebDriverWait(driver, 60).until(EC.presence_of_element_located((By.XPATH, '//button[@aria-label="Start voice mode"]')))
+        Answer = driver.find_elements(By.XPATH, '//p[@data-start="0"]')[-1].text
+        print('\n'+Answer)
+        
+        item['prompt'] = prompt
+        item['answer'] = Answer
+        output_list.append(item)
+        
+    
+        response = input('\n\n>>> Is there another question?\nEnter [y] for Yes or [n] for No: ').strip().lower()            
+        if response == 'n':
             break
-        elif response == 'y' or 'Y' : 
-            item['prompt'] = prompt
-            item['answer'] = Answer
-            output_list.append(item)
+        else:
             continue
+
+
 
     # saving output to csv file
     current_dir = os.path.dirname(os.path.abspath(__file__))
