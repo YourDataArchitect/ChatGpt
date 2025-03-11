@@ -120,7 +120,7 @@ if __name__ == "__main__":
     driver = ChatGPT_instant.handling_token()
 
     # Ask questions and save questions and answers to csv file 
-    output_list = []
+    output_list = [] # Define output list
     while True : 
         item = {}
         prompt = input('Please Enter your Prompt : ')
